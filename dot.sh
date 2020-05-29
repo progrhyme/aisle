@@ -10,10 +10,6 @@ if [ -n "${_DOT_SH_LOADED:-}" ]; then
 fi
 _DOT_SH_LOADED=1
 
-if [ -z "${DOTS_ENV_DIR:-}" -a -n "${DOTS_ENV:-}" ]; then
-  DOTS_ENV_DIR="${DOTS_ROOT}/envs/${DOTS_ENV}"
-fi
-
 # Load target shell scripts
 # Known issue:
 # - When require() is called simultaneously, $_dot_require_count is shared
@@ -26,10 +22,10 @@ require() {
     . "${DOTS_ROOT}/$1"
   fi
 
-  if [ -n "${DOTS_ENV_DIR:-}" ]; then
-    if [ -r "${DOTS_ENV_DIR}/$1" ]; then
+  if [ -n "${DOTS_ENV:-}" ]; then
+    if [ -r "$(_dots_env_dir)/$1" ]; then
       _dot_require_count=$((_dot_require_count+1))
-      . "${DOTS_ENV_DIR}/$1"
+      . "$(_dots_env_dir)/$1"
     fi
   fi
 
@@ -40,9 +36,9 @@ require() {
 
 # Print path of target resource file
 route() {
-  if [ -n "${DOTS_ENV_DIR:-}" ]; then
-    if [ -e "${DOTS_ENV_DIR}/$1" ]; then
-      echo "${DOTS_ENV_DIR}/$1"
+  if [ -n "$(_dots_env_dir)" ]; then
+    if [ -e "$(_dots_env_dir)/$1" ]; then
+      echo "$(_dots_env_dir)/$1"
       return
     fi
   fi
@@ -53,4 +49,9 @@ route() {
   fi
 
   return 1
+}
+
+_dots_env_dir() {
+  [ -n "${DOTS_ENV:-}" ] || return
+  echo "${DOTS_ROOT}/envs/${DOTS_ENV}"
 }
