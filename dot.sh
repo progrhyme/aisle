@@ -10,7 +10,7 @@ if [ -n "${_DOT_SH_LOADED:-}" ]; then
 fi
 _DOT_SH_LOADED=1
 
-if [ -z "${DOTS_ENV_DIR:-}" -a -n "$DOTS_ENV" ]; then
+if [ -z "${DOTS_ENV_DIR:-}" -a -n "${DOTS_ENV:-}" ]; then
   DOTS_ENV_DIR="${DOTS_ROOT}/envs/${DOTS_ENV}"
 fi
 
