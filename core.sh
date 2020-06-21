@@ -1,7 +1,5 @@
 # sh
 
-DOTSH_VERSION="0.1.0"
-
 if [ -z "${DOTS_ROOT:-}" ]; then
   return 1
 fi
