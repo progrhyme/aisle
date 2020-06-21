@@ -1,13 +1,13 @@
 # sh
 
-t_diag "Tests for dot.sh"
+t_diag "Tests for core.sh"
 
 mkdir -p tmp
 
-t::group "Can't load dot.sh without DOTS_ROOT variable" ({
+t::group "Can't load core.sh without DOTS_ROOT variable" ({
   unset DOTS_ROOT
-  . dot.sh
-  t_ne $? 0 "fail to source dot.sh"
+  . core.sh
+  t_ne $? 0 "fail to source core.sh"
 })
 
 t::group "With DOTS_ROOT set correctly" ({
@@ -16,8 +16,8 @@ t::group "With DOTS_ROOT set correctly" ({
   t_diag "And when DOTS_ENV is not set"
   unset foo DOTS_ENV
 
-  . dot.sh
-  t_eq $? 0 "succeed to source dot.sh"
+  . core.sh
+  t_eq $? 0 "succeed to source core.sh"
   t_is "$(route .env)" "tmp/.env" "CMD 'route .env' => 'tmp/.env'"
   require .env
   t_eq $? 0 "CMD 'require .env' succeed"
@@ -34,8 +34,8 @@ t::group "When \"test\" environment exists under the right DOTS_ROOT" ({
     DOTS_ENV=test
     echo "foo=baz" > tmp/envs/test/.env
 
-    . dot.sh
-    t_eq $? 0 "succeed to source dot.sh"
+    . core.sh
+    t_eq $? 0 "succeed to source core.sh"
     t_is "$(route .env)" "tmp/envs/test/.env" "CMD 'route .env' => 'tmp/envs/test/.env'"
     require .env
     t_eq $? 0 "CMD 'require .env' succeed"
@@ -46,8 +46,8 @@ t::group "When \"test\" environment exists under the right DOTS_ROOT" ({
     echo "foo=baz" > tmp/envs/test/.env
     DOTS_ENV=no-such-env
 
-    . dot.sh
-    t_eq $? 0 "succeed to source dot.sh"
+    . core.sh
+    t_eq $? 0 "succeed to source core.sh"
     t_is "$(route .env)" "tmp/.env" "CMD 'route .env' => 'tmp/.env'"
     require .env
     t_eq $? 0 "CMD 'require .env' succeed"
