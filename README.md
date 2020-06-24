@@ -14,3 +14,9 @@ require .profile.extra
 
 Then, `$DOTS_ROOT/.profile.extra` and `$DOTS_ROOT/envs/darwin/.profile.extra` are
 sourced in order.
+
+# License
+
+The MIT License.
+
+Copyright (c) 2020 IKEDA Kiyoshi.
