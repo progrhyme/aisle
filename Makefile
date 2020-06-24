@@ -1,7 +1,8 @@
-.PHONY: test clean shove
+.PHONY: test release clean shove
 
-SHELLS := sh bash zsh dash ksh
-SHOVE  := vendor/shove/bin/shove
+VERSION := $(shell . dot.sh && echo $$DOTSH_VERSION)
+SHELLS  := sh bash zsh dash ksh
+SHOVE   := vendor/shove/bin/shove
 
 test: shove
 	@for sh in $(SHELLS); do \
@@ -12,6 +13,13 @@ test: shove
 			continue; \
 		fi \
 	done
+
+release:
+	git commit -m $(VERSION)
+	test $$(git status --short | wc -l) -eq 0
+	git tag -a v$(VERSION) -m $(VERSION)
+	git push origin v$(VERSION)
+	git push origin master
 
 clean:
 	rm -rf vendor
