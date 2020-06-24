@@ -1,0 +1,164 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+VERSION="0.10.0"
+
+LN="ln -s"
+FORCE=""
+VERBOSE=${LINKS_VERBOSE:-}
+
+SRC=""
+DST=""
+
+help() {
+  pod2text $0
+  exit 1
+}
+
+verbose() {
+  if [[ $VERBOSE ]]; then
+    echo $@
+  fi
+}
+
+## Parse Arguments
+for opt in "$@"; do
+  case "${1:-}" in
+    "-H" | "--hard" )
+      LN="ln"
+      shift
+      ;;
+    "-f" | "--force" )
+      FORCE=1
+      shift
+      ;;
+    "-V" | "--verbose" )
+      VERBOSE=1
+      shift
+      ;;
+    "-h" | "--help" )
+      help
+      ;;
+    "-v" | "--version" )
+      echo $VERSION
+      exit 0
+      ;;
+    * )
+      if [[ ${1:-} ]]; then
+        if [[ -z $SRC ]]; then
+          SRC=$1
+        elif [[ -z $DST ]]; then
+          DST=$1
+        else
+          echo "[WARN] Too many argument: $1" >&2
+        fi
+        shift
+      fi
+      ;;
+  esac
+done
+
+if [[ -z $SRC ]]; then
+  echo "[ERROR] No source specified!" >&2
+  help
+  exit 1
+elif [[ ! -e $SRC ]]; then
+  echo "[ERROR] No source exist! Path: ${SRC}" >&2
+  exit 1
+fi
+
+# Trim ending "/"
+while [[ $SRC =~ (.*)/+$ ]]; do
+  SRC=${BASH_REMATCH[1]}
+done
+
+if [[ -z $DST ]]; then
+  DST=${SRC##*/} # /path/to/foo => foo
+fi
+
+if [[ -L $DST ]]; then
+  curr_link=$(readlink $DST)
+  if [[ $curr_link = $SRC ]]; then
+    verbose "[OK] Already linked: ${DST} -> ${SRC}"
+    exit 0
+  else
+    echo "[NOTICE] Link different: ${DST} -> ${curr_link}" >&2
+    if [[ -z $FORCE ]]; then
+      exit 1
+    fi
+  fi
+elif [[ -d $DST ]]; then
+  echo "[NOTICE] Directory exists: ${DST}" >&2
+  exit 1
+elif [[ -e $DST ]]; then
+  echo "[NOTICE] File exists: ${DST}" >&2
+  exit 1
+fi
+
+ln_cmd=$LN
+if [[ $FORCE ]]; then
+  ln_cmd="${ln_cmd} -f"
+fi
+
+$ln_cmd $SRC $DST
+verbose "[OK] Link created: ${DST} -> ${SRC}"
+
+exit 0
+
+: <<'__EOF__'
+
+=encoding utf8
+
+=head1 NAME
+
+B<links> - Wrapper command of B<ln> to make links
+
+=head1 SYNOPSYS
+
+Create Link:
+
+    # Format
+    links [OPTIONS] SOURCE_PATH [LINK_PATH]
+
+    # Symbolic link (default)
+    links /path/to/foo.txt
+    links SOURCE LINK
+    links -f|--force SOURCE LINK # Overwrite link
+
+    # Hard link
+    links -H|--hard SOURCE_PATH [LINK_PATH]
+
+    # Verbose output
+    links -V|--verbose SOURCE_PATH [LINK_PATH]
+    LINKS_VERBOSE=1 links SOURCE_PATH [LINK_PATH]
+
+Help:
+
+    links -h|--help
+
+Version:
+
+    links -v|--version
+
+=head1 DESCRIPTION
+
+This script B<links> creates symbolic or hard link by C<ln> command.
+The default is symbolic link.
+
+Unlike C<ln> command, B<links> does not overwrite existing file or directory even
+if C<--force> option is specified.
+
+=head1 AUTHORS
+
+IKEDA Kiyoshi E<lt>progrhyme@gmail.comE<gt>
+
+=head1 LICENSE
+
+The MIT License (MIT)
+
+Copyright (c) 2016-2020 IKEDA Kiyoshi
+
+=cut
+
+__EOF__
