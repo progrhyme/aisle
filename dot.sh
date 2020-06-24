@@ -2,7 +2,7 @@
 #
 # Load all scripts in this project
 
-DOTSH_VERSION="0.1.0"
+DOTSH_VERSION="0.2.0"
 
 DOTSH_ROOT=${DOTSH_ROOT:-}
 if [ -n "$DOTSH_ROOT" ]; then

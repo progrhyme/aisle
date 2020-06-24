@@ -1,6 +1,6 @@
 .PHONY: test release clean shove
 
-VERSION := $(shell . dot.sh && echo $$DOTSH_VERSION)
+VERSION := $(shell DOTSH_ROOT=. . dot.sh && echo $$DOTSH_VERSION)
 SHELLS  := sh bash zsh dash ksh
 SHOVE   := vendor/shove/bin/shove
 
