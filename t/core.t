@@ -18,7 +18,7 @@ t::group "With DOTS_ROOT set correctly" ({
 
   . core.sh
   t_eq $? 0 "succeed to source core.sh"
-  t_is "$(route .env)" "tmp/.env" "CMD 'route .env' => 'tmp/.env'"
+  t_is "$(passage .env)" "tmp/.env" "CMD 'passage .env' => 'tmp/.env'"
   require .env
   t_eq $? 0 "CMD 'require .env' succeed"
   t_is "$foo" "bar" "foo = bar"
@@ -36,7 +36,7 @@ t::group "When \"test\" environment exists under the right DOTS_ROOT" ({
 
     . core.sh
     t_eq $? 0 "succeed to source core.sh"
-    t_is "$(route .env)" "tmp/envs/test/.env" "CMD 'route .env' => 'tmp/envs/test/.env'"
+    t_is "$(passage .env)" "tmp/envs/test/.env" "CMD 'passage .env' => 'tmp/envs/test/.env'"
     require .env
     t_eq $? 0 "CMD 'require .env' succeed"
     t_is "$foo" "baz" "foo = baz"
@@ -48,7 +48,7 @@ t::group "When \"test\" environment exists under the right DOTS_ROOT" ({
 
     . core.sh
     t_eq $? 0 "succeed to source core.sh"
-    t_is "$(route .env)" "tmp/.env" "CMD 'route .env' => 'tmp/.env'"
+    t_is "$(passage .env)" "tmp/.env" "CMD 'passage .env' => 'tmp/.env'"
     require .env
     t_eq $? 0 "CMD 'require .env' succeed"
     t_is "$foo" "bar" "foo = bar"

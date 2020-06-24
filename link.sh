@@ -34,7 +34,7 @@ fi
 # Create symlink to $1 at $HOME/$1
 # Use route() by dot.sh
 link_home() {
-  _src="$(route "$1" || true)"
+  _src="$(passage "$1" || true)"
   if [ -z "$_src" ]; then
     echo "[error] $1 doesn't exist!" >&2
     return 1
@@ -51,7 +51,7 @@ link_home() {
 # Create symlink to $1(a) at $2(b)
 # Use route() by dot.sh
 link_b2a() {
-  _src="$(route "$1" || true)"
+  _src="$(passage "$1" || true)"
   if [ -z "$_src" ]; then
     echo "[error] $1 doesn't exist!" >&2
     return 1

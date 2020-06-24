@@ -35,7 +35,7 @@ require() {
 }
 
 # Print path of target resource file
-route() {
+passage() {
   if [ -n "$(_dots_env_dir)" ]; then
     if [ -e "$(_dots_env_dir)/$1" ]; then
       echo "$(_dots_env_dir)/$1"
@@ -50,6 +50,8 @@ route() {
 
   return 1
 }
+
+alias route=passage
 
 _dots_env_dir() {
   [ -n "${DOTS_ENV:-}" ] || return
